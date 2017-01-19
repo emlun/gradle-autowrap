@@ -14,31 +14,36 @@
 
 SYSTEM_GRADLE=/usr/bin/gradle
 
-working_dir=$(pwd)
-gradle_cmd=$SYSTEM_GRADLE
-
-while true; do
-  if [[ -x ./gradlew ]]; then
-    gradle_cmd="$(pwd)/gradlew"
-    break
-  else
-    cd ..
-    if [[ "$(pwd)" == '/' ]]; then
-      break
+compute-gradle-command() {
+  while true; do
+    if [[ -x ./gradlew ]]; then
+      echo "$(pwd)/gradlew"
+      return
+    else
+      cd ..
+      if [[ "$(pwd)" == '/' ]]; then
+        break
+      fi
     fi
-  fi
-done
+  done
 
-cd "$working_dir"
+  echo "$SYSTEM_GRADLE"
+}
 
-if [[ "$gradle_cmd" != "$SYSTEM_GRADLE" ]] && hash realpath &>/dev/null; then
-  relative_gradle_cmd=$(realpath --relative-to=$(pwd) ${gradle_cmd})
-  if [[ "$relative_gradle_cmd" == 'gradlew' ]]; then
-    echo 'Using ./gradlew'
+prettify-gradle-command-if-wrapper() {
+  if [[ "$gradle_cmd" != "$SYSTEM_GRADLE" ]] && hash realpath &>/dev/null; then
+    relative_gradle_cmd=$(realpath --relative-to=$(pwd) ${gradle_cmd})
+    if [[ "$relative_gradle_cmd" == 'gradlew' ]]; then
+      echo './gradlew'
+    else
+      echo "$relative_gradle_cmd"
+    fi
   else
-    echo "Using $relative_gradle_cmd"
+    echo "$gradle_cmd"
   fi
-else
-  echo "Using $gradle_cmd"
-fi
+}
+
+gradle_cmd=$(compute-gradle-command)
+
+echo "Using $(prettify-gradle-command-if-wrapper "$gradle_cmd")"
 $gradle_cmd "$@"
