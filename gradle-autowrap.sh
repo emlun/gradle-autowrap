@@ -32,7 +32,7 @@ compute-gradle-command() {
 
 prettify-gradle-command-if-wrapper() {
   if [[ "$gradle_cmd" != "$SYSTEM_GRADLE" ]] && hash realpath &>/dev/null; then
-    relative_gradle_cmd=$(realpath --relative-to=$(pwd) ${gradle_cmd})
+    relative_gradle_cmd=$(realpath --relative-to=$(pwd) "${gradle_cmd}")
     if [[ "$relative_gradle_cmd" == 'gradlew' ]]; then
       echo './gradlew'
     else
