@@ -1,4 +1,4 @@
-#!/usr/bin/zsh
+#!/bin/bash
 #
 # Entry script for Gradle that walks up the directory tree and calls the
 # closest Gradle wrapper if it exists, falling back on /usr/bin/gradle if no
@@ -12,19 +12,19 @@
 # This is free and unencumbered software released into the public domain;
 # see http://unlicense.org/
 
-setopt extended_glob nullglob
+working_dir=$(pwd)
+gradle_cmd=/usr/bin/gradle
 
-wrapper=$(echo (../)#./gradlew)
-
-last_wrapper=''
-for w in $(echo $wrapper); do
-  last_wrapper=$w
+while [[ "$(pwd)" != '/' ]]; do
+  if [[ -x ./gradlew ]]; then
+    gradle_cmd="$(pwd)/gradlew"
+    break
+  else
+    cd ..
+  fi
 done
 
-if [[ -x "$last_wrapper" ]]; then
-  echo "Using $last_wrapper"
-  $last_wrapper "$@"
-else
-  echo "Using /usr/bin/gradle"
-  /usr/bin/gradle "$@"
-fi
+cd "$working_dir"
+
+echo "Using $gradle_cmd"
+$gradle_cmd "$@"
