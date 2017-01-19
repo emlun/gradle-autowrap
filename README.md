@@ -28,5 +28,3 @@ License
 
 This is free and unencumbered software released into the public domain;
 see http://unlicense.org/
-
-Author: Emil Lundberg <lundberg.emil@gmail.com> <https://keybase.io/emlun>
