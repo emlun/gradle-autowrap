@@ -1,4 +1,4 @@
-Gradle Wrapper wrapper gradle
+Gradle Wrapper wrapper `gradle`
 ===
 
 Entry script for Gradle that walks up the directory tree and calls the closest
